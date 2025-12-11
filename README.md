@@ -12,7 +12,7 @@
 
 # PromptCAD: AI-Powered Schematic Engine
 
-PromptCAD is an experimental text-to-schematic engineering tool powered by Google's Gemini 3.0 Pro. It converts natural language circuit descriptions into professional, exportable SVG diagrams using a custom auto-routing engine.
+PromptCAD is an experimental text-to-schematic engineering tool powered by Google's Gemini 3.0 Pro and is based on a javascript library I made earlier this year called TechDrawJS. It converts natural language circuit descriptions into professional, exportable SVG diagrams using a custom auto-routing engine.
 
 Simply describe a circuit—"A common emitter amplifier with NPN transistor" or "A full adder using logic gates"—and watch it generate instantly.
 
