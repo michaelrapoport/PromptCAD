@@ -1,0 +1,5 @@
+{
+  "name": "PromptCAD",
+  "description": "A text-to-schematic engineering tool powered by Gemini 2.5. Converts natural language circuit descriptions into professional SVG diagrams using a custom auto-routing engine.",
+  "requestFramePermissions": []
+}
