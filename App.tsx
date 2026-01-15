@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Canvas } from './components/Canvas';
 import { ChatInterface } from './components/ChatInterface';
 import { generateSchematicCode } from './services/geminiService';
@@ -72,6 +72,9 @@ const App: React.FC = () => {
       };
       setMessages(prev => [...prev, aiMsg]);
 
+      // Notify external hook if present
+      window.parent.postMessage({ type: 'PROMPTCAD_GENERATED', payload: { code, prompt: text } }, '*');
+
     } catch (error) {
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -89,6 +92,7 @@ const App: React.FC = () => {
     engineRef.current?.reset();
     setGeneratedCode('');
     setMessages([INITIAL_MESSAGE]);
+    window.parent.postMessage({ type: 'PROMPTCAD_CLEARED' }, '*');
   };
 
   const handleExport = () => {
@@ -103,8 +107,36 @@ const App: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      
+      window.parent.postMessage({ type: 'PROMPTCAD_EXPORTED', payload: { svg: svgContent } }, '*');
     }
   };
+
+  // --- External Messaging Hook ---
+  useEffect(() => {
+    const handleExternalMessage = (event: MessageEvent) => {
+      const { type, payload } = event.data;
+      if (!type) return;
+
+      switch (type) {
+        case 'PROMPTCAD_CMD_GENERATE':
+          if (payload?.prompt) handleSendMessage(payload.prompt);
+          break;
+        case 'PROMPTCAD_CMD_CLEAR':
+          handleClear();
+          break;
+        case 'PROMPTCAD_CMD_EXPORT':
+          handleExport();
+          break;
+        case 'PROMPTCAD_CMD_PING':
+          event.source?.postMessage({ type: 'PROMPTCAD_PONG' }, { targetOrigin: event.origin });
+          break;
+      }
+    };
+
+    window.addEventListener('message', handleExternalMessage);
+    return () => window.removeEventListener('message', handleExternalMessage);
+  }, []);
 
   return (
     <div className="flex flex-col h-screen bg-cad-dark text-slate-100 overflow-hidden">

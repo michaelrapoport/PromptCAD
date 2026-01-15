@@ -78,6 +78,13 @@ export class TechDrawEngine {
           g.appendChild(this.createEl('path', { d: 'M -5 -15 L 5 -25 M 5 -15 L 15 -25', class: 'stroke-slate-800 stroke-[1.5] fill-none' }));
           g.appendChild(this.createEl('path', { d: 'M 2 -25 L 5 -25 L 5 -22 M 12 -25 L 15 -25 L 15 -22', class: 'stroke-slate-800 stroke-[1.5] fill-none' }));
           return { anode: [-30, 0], cathode: [30, 0] };
+      
+      case 'antenna':
+          g.appendChild(this.createEl('line', { x1: 0, y1: 0, x2: 0, y2: -20, class: 'stroke-slate-800 stroke-[2]' }));
+          g.appendChild(this.createEl('line', { x1: 0, y1: -20, x2: -15, y2: -35, class: 'stroke-slate-800 stroke-[2]' }));
+          g.appendChild(this.createEl('line', { x1: 0, y1: -20, x2: 15, y2: -35, class: 'stroke-slate-800 stroke-[2]' }));
+          g.appendChild(this.createEl('line', { x1: 0, y1: -20, x2: 0, y2: -35, class: 'stroke-slate-800 stroke-[2]' }));
+          return { feed: [0, 0] };
 
       // --- SOURCES ---
       case 'source_v':
@@ -116,6 +123,28 @@ export class TechDrawEngine {
         g.appendChild(this.createEl('line', { x1: -50, y1: 15, x2: -30, y2: 15, class: 'stroke-slate-800 stroke-[2]' })); // In +
         g.appendChild(this.createEl('line', { x1: 35, y1: 0, x2: 55, y2: 0, class: 'stroke-slate-800 stroke-[2]' })); // Out
         return { in_inv: [-50, -15], in_non: [-50, 15], out: [55, 0] };
+        
+      case 'ic_555':
+          // Standard DIP-8 Block
+          g.appendChild(this.createEl('rect', { x: -40, y: -50, width: 80, height: 100, rx: 5, class: 'stroke-slate-800 stroke-[2] fill-white' }));
+          g.appendChild(this.createEl('path', { d: 'M -10 -50 A 10 10 0 0 0 10 -50', class: 'stroke-slate-800 stroke-[2] fill-none' })); // Notch
+          
+          // Pins Left
+          g.appendChild(this.createEl('line', { x1: -60, y1: -30, x2: -40, y2: -30, class: 'stroke-slate-800 stroke-[2]' })); // 1 GND
+          g.appendChild(this.createEl('line', { x1: -60, y1: -10, x2: -40, y2: -10, class: 'stroke-slate-800 stroke-[2]' })); // 2 Trig
+          g.appendChild(this.createEl('line', { x1: -60, y1: 10, x2: -40, y2: 10, class: 'stroke-slate-800 stroke-[2]' })); // 3 Out
+          g.appendChild(this.createEl('line', { x1: -60, y1: 30, x2: -40, y2: 30, class: 'stroke-slate-800 stroke-[2]' })); // 4 Reset
+          
+          // Pins Right
+          g.appendChild(this.createEl('line', { x1: 40, y1: 30, x2: 60, y2: 30, class: 'stroke-slate-800 stroke-[2]' })); // 5 CV
+          g.appendChild(this.createEl('line', { x1: 40, y1: 10, x2: 60, y2: 10, class: 'stroke-slate-800 stroke-[2]' })); // 6 Thr
+          g.appendChild(this.createEl('line', { x1: 40, y1: -10, x2: 60, y2: -10, class: 'stroke-slate-800 stroke-[2]' })); // 7 Dis
+          g.appendChild(this.createEl('line', { x1: 40, y1: -30, x2: 60, y2: -30, class: 'stroke-slate-800 stroke-[2]' })); // 8 Vcc
+          
+          return { 
+              gnd: [-60, -30], trig: [-60, -10], out: [-60, 10], rst: [-60, 30],
+              cv: [60, 30], thr: [60, 10], dis: [60, -10], vcc: [60, -30]
+          };
 
       case 'transistor_npn':
         g.appendChild(this.createEl('circle', { cx: 0, cy: 0, r: 25, class: 'stroke-slate-800 stroke-[1.5] fill-none' }));
@@ -214,6 +243,63 @@ export class TechDrawEngine {
           g.appendChild(this.createEl('line', { x1: -45, y1: 10, x2: -28, y2: 10, class: 'stroke-slate-800 stroke-[2]' }));
           g.appendChild(this.createEl('line', { x1: 10, y1: 0, x2: 25, y2: 0, class: 'stroke-slate-800 stroke-[2]' }));
           return { in1: [-45, -10], in2: [-45, 10], out: [25, 0] };
+      
+      // --- MICROCONTROLLERS & MODULES ---
+      case 'arduino_uno':
+          g.appendChild(this.createEl('rect', { x: -60, y: -90, width: 120, height: 180, rx: 5, class: 'stroke-slate-800 stroke-[2] fill-white' }));
+          const unoLabel = this.createEl('text', { x: 0, y: 0, class: 'fill-slate-500 font-sans text-xs font-bold text-anchor-middle' });
+          unoLabel.textContent = "ARDUINO";
+          unoLabel.setAttribute('text-anchor', 'middle');
+          g.appendChild(unoLabel);
+          
+          // Left Pins
+          g.appendChild(this.createEl('line', { x1: -80, y1: -70, x2: -60, y2: -70, class: 'stroke-slate-800 stroke-[2]' })); // 5V
+          g.appendChild(this.createEl('line', { x1: -80, y1: -50, x2: -60, y2: -50, class: 'stroke-slate-800 stroke-[2]' })); // GND
+          g.appendChild(this.createEl('line', { x1: -80, y1: -30, x2: -60, y2: -30, class: 'stroke-slate-800 stroke-[2]' })); // VIN
+          g.appendChild(this.createEl('line', { x1: -80, y1: 50, x2: -60, y2: 50, class: 'stroke-slate-800 stroke-[2]' })); // A0
+          
+          // Right Pins (Digital)
+          g.appendChild(this.createEl('line', { x1: 60, y1: -70, x2: 80, y2: -70, class: 'stroke-slate-800 stroke-[2]' })); // D13
+          g.appendChild(this.createEl('line', { x1: 60, y1: -50, x2: 80, y2: -50, class: 'stroke-slate-800 stroke-[2]' })); // D12
+          g.appendChild(this.createEl('line', { x1: 60, y1: -30, x2: 80, y2: -30, class: 'stroke-slate-800 stroke-[2]' })); // D11 (PWM)
+          g.appendChild(this.createEl('line', { x1: 60, y1: -10, x2: 80, y2: -10, class: 'stroke-slate-800 stroke-[2]' })); // D10 (PWM)
+          g.appendChild(this.createEl('line', { x1: 60, y1: 10, x2: 80, y2: 10, class: 'stroke-slate-800 stroke-[2]' })); // D9 (PWM)
+          g.appendChild(this.createEl('line', { x1: 60, y1: 30, x2: 80, y2: 30, class: 'stroke-slate-800 stroke-[2]' })); // D8
+          
+          return { 
+             '5v': [-80, -70], gnd: [-80, -50], vin: [-80, -30], a0: [-80, 50],
+             d13: [80, -70], d12: [80, -50], d11: [80, -30], d10: [80, -10], d9: [80, 10], d8: [80, 30]
+          };
+
+      case 'stepper_motor':
+          g.appendChild(this.createEl('circle', { cx: 0, cy: 0, r: 35, class: 'stroke-slate-800 stroke-[2] fill-white' }));
+          const mLabel = this.createEl('text', { x: 0, y: 5, class: 'fill-slate-800 font-sans text-xl font-bold text-anchor-middle' });
+          mLabel.textContent = "M";
+          mLabel.setAttribute('text-anchor', 'middle');
+          g.appendChild(mLabel);
+          
+          // 4 Wire Stepper (Bipolar)
+          g.appendChild(this.createEl('line', { x1: -35, y1: -15, x2: -50, y2: -15, class: 'stroke-slate-800 stroke-[2]' })); // A+
+          g.appendChild(this.createEl('line', { x1: -35, y1: 15, x2: -50, y2: 15, class: 'stroke-slate-800 stroke-[2]' })); // A-
+          g.appendChild(this.createEl('line', { x1: 35, y1: -15, x2: 50, y2: -15, class: 'stroke-slate-800 stroke-[2]' })); // B+
+          g.appendChild(this.createEl('line', { x1: 35, y1: 15, x2: 50, y2: 15, class: 'stroke-slate-800 stroke-[2]' })); // B-
+          
+          return { a1: [-50, -15], a2: [-50, 15], b1: [50, -15], b2: [50, 15] };
+
+      case 'driver_stepper':
+          // Module style (like A4988)
+          g.appendChild(this.createEl('rect', { x: -30, y: -40, width: 60, height: 80, rx: 2, class: 'stroke-slate-800 stroke-[2] fill-white' }));
+          
+          g.appendChild(this.createEl('line', { x1: -30, y1: -30, x2: -45, y2: -30, class: 'stroke-slate-800 stroke-[2]' })); // DIR
+          g.appendChild(this.createEl('line', { x1: -30, y1: -10, x2: -45, y2: -10, class: 'stroke-slate-800 stroke-[2]' })); // STEP
+          g.appendChild(this.createEl('line', { x1: -30, y1: 30, x2: -45, y2: 30, class: 'stroke-slate-800 stroke-[2]' })); // GND
+          
+          g.appendChild(this.createEl('line', { x1: 30, y1: -30, x2: 45, y2: -30, class: 'stroke-slate-800 stroke-[2]' })); // 1A
+          g.appendChild(this.createEl('line', { x1: 30, y1: -10, x2: 45, y2: -10, class: 'stroke-slate-800 stroke-[2]' })); // 1B
+          g.appendChild(this.createEl('line', { x1: 30, y1: 10, x2: 45, y2: 10, class: 'stroke-slate-800 stroke-[2]' })); // 2A
+          g.appendChild(this.createEl('line', { x1: 30, y1: 30, x2: 45, y2: 30, class: 'stroke-slate-800 stroke-[2]' })); // 2B
+          
+          return { dir: [-45, -30], step: [-45, -10], gnd: [-45, 30], out1a: [45, -30], out1b: [45, -10], out2a: [45, 10], out2b: [45, 30] };
 
       default:
         return {};

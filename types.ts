@@ -18,7 +18,8 @@ export type ComponentType =
   | 'opamp' 
   | 'transistor_npn' | 'transistor_pnp' 
   | 'mosfet_n' | 'mosfet_p'
-  | 'gate_and' | 'gate_or' | 'gate_not' | 'gate_nand' | 'gate_nor' | 'gate_xor';
+  | 'gate_and' | 'gate_or' | 'gate_not' | 'gate_nand' | 'gate_nor' | 'gate_xor'
+  | 'arduino_uno' | 'stepper_motor' | 'driver_stepper' | 'antenna' | 'ic_555';
 
 export interface PinPosition {
   x: number;
